@@ -1,0 +1,257 @@
+:root {
+  color-scheme: dark;
+  --bg: #060816;
+  --bg-glow: #0f1a33;
+  --panel: rgba(11, 16, 31, 0.94);
+  --field: #141c34;
+  --field-border: #273456;
+  --text: #eef2ff;
+  --muted: #94a3c7;
+  --track: rgba(122, 147, 209, 0.2);
+  --track-faded: rgba(122, 147, 209, 0.12);
+  --dial-on: #34d399;
+  --dial-off: #818cf8;
+  --dial-reps: #60a5fa;
+  --danger: #fb7185;
+  --ok: #34d399;
+  --shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+}
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: "Segoe UI", "SF Pro Display", system-ui, sans-serif;
+  margin: 0;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding:
+    max(20px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right))
+    max(20px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
+  background:
+    radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 34%),
+    linear-gradient(180deg, var(--bg-glow) 0%, var(--bg) 36%, #04060f 100%);
+  color: var(--text);
+}
+
+.app {
+  width: min(100%, 420px);
+  display: grid;
+  gap: 16px;
+  padding: 14px 14px 16px;
+  border-radius: 22px;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow);
+}
+
+h1 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: 1px;
+  padding: 4px 0 36px;
+  text-align: center;
+  font-weight: 400;
+}
+
+.dial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.dial-card {
+  display: grid;
+  justify-items: center;
+  gap: 0;
+}
+
+.dial {
+  --dial-color: var(--dial-on);
+  --dial-faded-color: rgba(52, 211, 153, 0.28);
+  --dial-current-color: var(--dial-color);
+  --progress: 1;
+  position: relative;
+  width: 102px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: conic-gradient(var(--dial-current-color) calc(var(--progress) * 1turn), var(--track-faded) 0turn);
+}
+
+#dialOn {
+  --dial-color: var(--dial-on);
+  --dial-faded-color: rgba(52, 211, 153, 0.28);
+}
+
+#dialOff {
+  --dial-color: var(--dial-off);
+  --dial-faded-color: rgba(129, 140, 248, 0.28);
+}
+
+#dialReps {
+  --dial-color: var(--dial-reps);
+  --dial-faded-color: rgba(96, 165, 250, 0.28);
+}
+
+.dial::before {
+  content: "";
+  width: calc(100% - 12px);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.dial-inner {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+}
+
+.dial-inner label,
+.field-unit {
+  color: var(--dial-color);
+}
+
+.dial-inner label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dial input {
+  width: 3ch;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  outline: none;
+  font-size: 31px;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.dial input::-webkit-outer-spin-button,
+.dial input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.dial input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.dial-buttons {
+  width: 102px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -10px;
+}
+
+.step-button {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #c7d2fe;
+  font-size: 28px;
+  line-height: 1;
+  opacity: 0.7;
+  
+}
+
+.field-unit {
+  font-size: 11px;
+  margin-top: -3px;
+  color: color-mix(in srgb, var(--muted) 88%, var(--text));
+  opacity: 0.6;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+button {
+  appearance: none;
+  border: none;
+  border-radius: 18px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 14px;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+button:not(:disabled):active {
+  transform: translateY(1px) scale(0.995);
+}
+
+.start {
+  color: #03110b;
+  background: #4ade80;
+}
+
+.stop {
+  color: #ffe4e6;
+  background: #be3455;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+.stop:disabled {
+  opacity: 1;
+  color: #fecdd3;
+  background: #7f2840;
+}
+
+body[data-phase="on"] #dialOn,
+body[data-phase="off"] #dialOff,
+body[data-phase="on"] #dialReps,
+body[data-phase="off"] #dialReps {
+  --dial-current-color: var(--dial-color);
+}
+
+@media (max-width: 420px) {
+  .app {
+    padding: 12px 12px 14px;
+  }
+
+  .dial {
+    width: min(29vw, 102px);
+  }
+}
+
+@media (max-width: 360px) {
+  .dial-grid {
+    grid-template-columns: 1fr;
+  }
+}
