@@ -7,15 +7,13 @@
   --field-border: #273456;
   --text: #eef2ff;
   --muted: #94a3c7;
-  --track: rgba(122, 147, 209, 0.2);
   --track-faded: rgba(122, 147, 209, 0.12);
-  --dial-on: #34d399;
-  --dial-off: #818cf8;
-  --dial-reps: #60a5fa;
-  --danger: #fb7185;
-  --ok: #34d399;
+  --dial-on: hsl(161 94% 34% / 1);
+  --dial-off: hsl(13 57% 48% / 1);
+  --dial-reps: hsl(213 94% 63% / 1);
   --shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
 }
+
 * {
   box-sizing: border-box;
 }
@@ -30,14 +28,9 @@ body {
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding:
-    max(20px, env(safe-area-inset-top))
-    max(16px, env(safe-area-inset-right))
-    max(20px, env(safe-area-inset-bottom))
-    max(16px, env(safe-area-inset-left));
-  background:
-    radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 34%),
-    linear-gradient(180deg, var(--bg-glow) 0%, var(--bg) 36%, #04060f 100%);
+  padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 34%),
+  linear-gradient(180deg, var(--bg-glow) 0%, var(--bg) 36%, #04060f 100%);
   color: var(--text);
 }
 
@@ -85,6 +78,7 @@ h1 {
   place-items: center;
   border-radius: 999px;
   background: conic-gradient(var(--dial-current-color) calc(var(--progress) * 1turn), var(--track-faded) 0turn);
+  transform: scaleX(-1);
 }
 
 #dialOn {
@@ -107,7 +101,7 @@ h1 {
   width: calc(100% - 12px);
   aspect-ratio: 1;
   border-radius: 999px;
-  background: var(--panel);
+  background: rgb(11, 16, 31);
   border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
@@ -116,6 +110,7 @@ h1 {
   display: grid;
   justify-items: center;
   gap: 3px;
+  transform: scaleX(-1);
 }
 
 .dial-inner label,
@@ -160,7 +155,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: -10px;
+  margin-top: -7px;
 }
 
 .step-button {
@@ -174,7 +169,7 @@ h1 {
   font-size: 28px;
   line-height: 1;
   opacity: 0.7;
-  
+
 }
 
 .field-unit {
@@ -186,51 +181,44 @@ h1 {
 
 .buttons {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: 1fr;
   margin-top: 28px;
 }
 
 button {
   appearance: none;
   border: none;
-  border-radius: 18px;
+  border-radius: 8px;
   min-width: 0;
   min-height: 48px;
-  padding: 14px;
+  padding: 10px;
   font: inherit;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 22px;
   cursor: pointer;
-  transition:
-    transform 160ms ease,
-    opacity 160ms ease,
-    background 160ms ease,
-    box-shadow 160ms ease;
+  transition: transform 160ms ease,
+  opacity 160ms ease,
+  background 160ms ease,
+  box-shadow 160ms ease;
+}
+
+button:focus,
+button:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 button:not(:disabled):active {
   transform: translateY(1px) scale(0.995);
 }
 
-.start {
-  color: #03110b;
-  background: #4ade80;
+.toggle-button.start {
+  color: white;
+  background: var(--dial-on);
 }
 
-.stop {
+.toggle-button.stop {
   color: #ffe4e6;
-  background: #be3455;
-}
-
-button:disabled {
-  cursor: not-allowed;
-}
-
-.stop:disabled {
-  opacity: 1;
-  color: #fecdd3;
-  background: #7f2840;
+  background: var(--dial-off);
 }
 
 body[data-phase="on"] #dialOn,

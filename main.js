@@ -1,19 +1,30 @@
 console.log('V2')
 const Audio = (() => {
   let ctx;
+  const debugSounds = {
+    1: { type: 'square', attack: 0.02, release: 0.05, freq: 500 },
+    2: { type: 'triangle', attack: 0.02, release: 0.05, freq: 500 },
+    3: { type: 'sine', attack: 0.02, release: 0.05, freq: 500 },
+    4: { type: 'sawtooth', attack: 0.02, release: 0.05, freq: 500 },
+    5: { type: 'triangle', attack: 0.08, release: 0.12, freq: 500 },
+    6: { type: 'sine', attack: 0.08, release: 0.12, freq: 500 },
+    7: { type: 'triangle', attack: 0.005, release: 0.2, freq: 600 },
+    8: { type: 'sine', attack: 0.15, release: 0.2, freq: 600 },
+  };
+
   function ensure() {
     if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
     return ctx;
   }
-  function beep(freq=880, dur=0.7){
+  function beep(freq=880, dur=0.7, options={}){
     const c = ensure();
     const o = c.createOscillator();
     const g = c.createGain();
-    o.type = 'square';
+    o.type = options.type ?? 'square';
     o.frequency.value = freq;
     const now = c.currentTime;
-    const attack = Math.min(0.02, dur * 0.25);
-    const release = Math.min(0.05, Math.max(0.01, dur * 0.5));
+    const attack = Math.min(options.attack ?? 0.02, dur * 0.5);
+    const release = Math.min(options.release ?? 0.05, Math.max(0.01, dur * 0.8));
     const releaseStart = Math.max(now + attack, now + dur - release);
     g.gain.setValueAtTime(0, now);
     g.gain.linearRampToValueAtTime(1, now + attack);
@@ -23,14 +34,21 @@ const Audio = (() => {
     o.start();
     o.stop(now + dur + 0.02);
   }
-  return { beep };
+  function debugBeep(id, dur=0.7) {
+    const sound = debugSounds[id];
+    if (!sound) return;
+    beep(sound.freq, dur, sound);
+  }
+  function presetBeep(id, dur=0.7) {
+    debugBeep(String(id), dur);
+  }
+  return { beep, debugBeep, presetBeep };
 })();
 
 const onInput  = document.getElementById('onSec');
 const offInput = document.getElementById('offSec');
 const repsInput = document.getElementById('reps');
-const btnStart = document.getElementById('btnStart');
-const btnStop  = document.getElementById('btnStop');
+const btnToggle = document.getElementById('btnToggle');
 const dialOn = document.getElementById('dialOn');
 const dialOff = document.getElementById('dialOff');
 const dialReps = document.getElementById('dialReps');
@@ -72,6 +90,12 @@ function getReps(){
   return Math.max(1, Math.floor(Number(repsInput.value) || 5));
 }
 
+function syncToggleButton() {
+  btnToggle.textContent = running ? 'Stop' : 'Start';
+  btnToggle.classList.toggle('start', !running);
+  btnToggle.classList.toggle('stop', running);
+}
+
 function setDialProgress(el, progress){
   el.style.setProperty('--progress', progress);
 }
@@ -97,7 +121,8 @@ function updateDialVisuals(){
 
   setDialProgress(dialOn, phase === 'on' ? left / onDuration : 0);
   setDialProgress(dialOff, phase === 'off' ? left / offDuration : 1);
-  setDialProgress(dialReps, Math.max(0, 1 - (count / repsTarget)));
+  const completedRounds = phase === 'off' ? count : Math.max(0, count - 1);
+  setDialProgress(dialReps, Math.max(0, 1 - (completedRounds / repsTarget)));
 }
 
 function animate(){
@@ -134,6 +159,7 @@ function onDeadline(){
       doStopPhase();
     }
   } else {
+    Audio.presetBeep(7);
     doStartPhase();
   }
 }
@@ -149,14 +175,13 @@ function scheduleNext(){
 function doStartPhase(){
   setPhase('on');
   count++;
-  Audio.beep(500);
   scheduleNext();
   updateDialVisuals();
 }
 
 function doStopPhase(){
   setPhase('off');
-  Audio.beep(250);
+  Audio.presetBeep(2);
   scheduleNext();
   updateDialVisuals();
 }
@@ -166,21 +191,26 @@ function start(){
   running = true;
   count = 0;
   repsTarget = getReps();
-  btnStart.disabled = true; btnStop.disabled = false;
+  syncToggleButton();
   startAnimation();
   // Three short pre-start beeps 600ms apart; then actually start.
   clearPreStartTimers();
   const gap = 600; // ms
   const short = 0.2; // seconds
-  preStartTimers.push(setTimeout(()=>{ if(running) Audio.beep(500, short); }, 0));
-  preStartTimers.push(setTimeout(()=>{ if(running) Audio.beep(500, short); }, gap));
-  preStartTimers.push(setTimeout(()=>{ if(running) Audio.beep(500, short); }, gap*2));
-  preStartTimers.push(setTimeout(()=>{ if(!running) return; clearPreStartTimers(); doStartPhase(); }, gap*3));
+  preStartTimers.push(setTimeout(()=>{ if(running) Audio.presetBeep(2, short); }, 0));
+  preStartTimers.push(setTimeout(()=>{ if(running) Audio.presetBeep(2, short); }, gap));
+  preStartTimers.push(setTimeout(()=>{ if(running) Audio.presetBeep(2, short); }, gap*2));
+  preStartTimers.push(setTimeout(()=>{
+    if(!running) return;
+    Audio.presetBeep(7);
+    clearPreStartTimers();
+    doStartPhase();
+  }, gap*3));
 }
 
 function stop(){
   running = false;
-  btnStart.disabled = false; btnStop.disabled = true;
+  syncToggleButton();
   clearTimeout(pendingTimeout); pendingTimeout = null;
   clearPreStartTimers();
   stopAnimation();
@@ -188,8 +218,10 @@ function stop(){
   updateDialVisuals();
 }
 
-btnStart.addEventListener('click', start);
-btnStop.addEventListener('click', stop);
+btnToggle.addEventListener('click', () => {
+  if (running) stop();
+  else start();
+});
 
 for (const { button, input, delta } of stepButtons) {
   button.addEventListener('click', () => {
@@ -209,12 +241,13 @@ document.addEventListener('visibilitychange', () => { if (!running || switchDead
 loadDurations();
 setPhase('idle');
 updateDialVisuals();
+syncToggleButton();
 
 function tripleStopBeep(){
   const gap = 800; // ms between beeps
-  Audio.beep(250);
-  setTimeout(()=>Audio.beep(250), gap);
-  setTimeout(()=>Audio.beep(250), gap*2);
+  Audio.presetBeep(2, 0.5);
+  setTimeout(()=>Audio.presetBeep(2, 0.5), gap);
+  setTimeout(()=>Audio.presetBeep(2, 0.5), gap*2);
 }
 
 function clearPreStartTimers(){

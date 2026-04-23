@@ -1,67 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <title>Phased Timer</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2563eb" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2563eb"/>
+  <link rel="stylesheet" href="style.css?v=2026-04-23-2"/>
 </head>
 <body>
-  <div class="app">
-    <h1>Phased Timer</h1>
+<div class="app">
+  <h1>Phased Timer</h1>
 
-    <section class="dial-grid">
-      <div class="dial-card" id="dialOnCard">
-        <div class="dial" id="dialOn">
-          <div class="dial-inner">
-            <label for="onSec">On</label>
-            <input id="onSec" type="number" min="1" step="1" value="8" inputmode="numeric" />
-            <span class="field-unit">seconds</span>
-          </div>
-        </div>
-        <div class="dial-buttons">
-          <button class="step-button" id="onDown" type="button" aria-label="Decrease on seconds">−</button>
-          <button class="step-button" id="onUp" type="button" aria-label="Increase on seconds">+</button>
+  <section class="dial-grid">
+    <div class="dial-card" id="dialOnCard">
+      <div class="dial" id="dialOn">
+        <div class="dial-inner">
+          <label for="onSec">On</label>
+          <input id="onSec" type="number" min="1" step="1" value="8" inputmode="numeric"/>
+          <span class="field-unit">seconds</span>
         </div>
       </div>
-
-      <div class="dial-card" id="dialOffCard">
-        <div class="dial" id="dialOff">
-          <div class="dial-inner">
-            <label for="offSec">Rest</label>
-            <input id="offSec" type="number" min="1" step="1" value="2" inputmode="numeric" />
-            <span class="field-unit">seconds</span>
-          </div>
-        </div>
-        <div class="dial-buttons">
-          <button class="step-button" id="offDown" type="button" aria-label="Decrease rest seconds">−</button>
-          <button class="step-button" id="offUp" type="button" aria-label="Increase rest seconds">+</button>
-        </div>
+      <div class="dial-buttons">
+        <button class="step-button" id="onDown" type="button" aria-label="Decrease on seconds">−</button>
+        <button class="step-button" id="onUp" type="button" aria-label="Increase on seconds">+</button>
       </div>
-
-      <div class="dial-card" id="dialRepsCard">
-        <div class="dial" id="dialReps">
-          <div class="dial-inner">
-            <label for="reps">Reps</label>
-            <input id="reps" type="number" min="1" step="1" value="5" inputmode="numeric" />
-            <span class="field-unit">rounds</span>
-          </div>
-        </div>
-        <div class="dial-buttons">
-          <button class="step-button" id="repsDown" type="button" aria-label="Decrease reps">−</button>
-          <button class="step-button" id="repsUp" type="button" aria-label="Increase reps">+</button>
-        </div>
-      </div>
-    </section>
-
-    <div class="buttons">
-      <button class="start" id="btnStart">Start</button>
-      <button class="stop" id="btnStop" disabled>Stop</button>
     </div>
-  </div>
 
-  <script src="main.js"></script>
+    <div class="dial-card" id="dialOffCard">
+      <div class="dial" id="dialOff">
+        <div class="dial-inner">
+          <label for="offSec">Rest</label>
+          <input id="offSec" type="number" min="1" step="1" value="2" inputmode="numeric"/>
+          <span class="field-unit">seconds</span>
+        </div>
+      </div>
+      <div class="dial-buttons">
+        <button class="step-button" id="offDown" type="button" aria-label="Decrease rest seconds">−</button>
+        <button class="step-button" id="offUp" type="button" aria-label="Increase rest seconds">+</button>
+      </div>
+    </div>
+
+    <div class="dial-card" id="dialRepsCard">
+      <div class="dial" id="dialReps">
+        <div class="dial-inner">
+          <label for="reps">Reps</label>
+          <input id="reps" type="number" min="1" step="1" value="5" inputmode="numeric"/>
+          <span class="field-unit">repeats</span>
+        </div>
+      </div>
+      <div class="dial-buttons">
+        <button class="step-button" id="repsDown" type="button" aria-label="Decrease reps">−</button>
+        <button class="step-button" id="repsUp" type="button" aria-label="Increase reps">+</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="buttons">
+    <button class="toggle-button start" id="btnToggle">Start</button>
+  </div>
+</div>
+
+<script src="main.js?v=2026-04-23-2"></script>
 </body>
 </html>
