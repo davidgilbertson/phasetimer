@@ -1,17 +1,14 @@
 :root {
   color-scheme: dark;
+  --viewport-height: 100dvh;
   --bg: #060816;
   --bg-glow: #0f1a33;
-  --panel: rgba(11, 16, 31, 0.94);
-  --field: #141c34;
-  --field-border: #273456;
   --text: #eef2ff;
   --muted: #94a3c7;
   --track-faded: rgba(122, 147, 209, 0.12);
   --dial-on: hsl(161 94% 34% / 1);
-  --dial-off: hsl(13 57% 48% / 1);
+  --dial-off: hsl(13 66% 58% / 1);
   --dial-reps: hsl(213 94% 63% / 1);
-  --shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -19,51 +16,82 @@
 }
 
 html, body {
+  margin: 0;
   height: 100%;
+}
+
+html {
+  background-color: #04060f;
 }
 
 body {
   font-family: "Segoe UI", "SF Pro Display", system-ui, sans-serif;
-  margin: 0;
-  min-height: 100dvh;
-  display: grid;
-  place-items: center;
-  padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
-  background: radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 34%),
-  linear-gradient(180deg, var(--bg-glow) 0%, var(--bg) 36%, #04060f 100%);
+  min-height: var(--viewport-height);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 34%),
+  linear-gradient(180deg, var(--bg-glow) 0%, var(--bg) 58%, rgba(4, 6, 15, 0) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 560px, 100% 560px;
   color: var(--text);
+  overflow-x: hidden;
 }
 
 .app {
-  width: min(100%, 420px);
+  width: min(100%, 452px);
+  height: clamp(650px, var(--viewport-height), 800px);
+  margin-block: auto;
+  padding: 16px;
   display: grid;
-  gap: 16px;
-  padding: 14px 14px 16px;
-  border-radius: 22px;
-  background: var(--panel);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: var(--shadow);
+  grid-template-areas:
+    "."
+    "title"
+    "."
+    "on"
+    "."
+    "off"
+    "."
+    "reps"
+    "."
+    "button"
+    ".";
+  grid-template-rows:
+    1fr max-content
+    2fr max-content
+    1fr max-content
+    1fr max-content
+    2fr max-content
+    1fr;
+  justify-items: center;
 }
 
 h1 {
+  grid-area: title;
   margin: 0;
   font-size: 22px;
   letter-spacing: 1px;
-  padding: 4px 0 36px;
+  padding: 4px 0 0;
   text-align: center;
   font-weight: 400;
 }
 
-.dial-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.dial-card {
+.dial-control {
   display: grid;
   justify-items: center;
   gap: 0;
+}
+
+.dial-control:nth-of-type(1) {
+  grid-area: on;
+}
+
+.dial-control:nth-of-type(2) {
+  grid-area: off;
+}
+
+.dial-control:nth-of-type(3) {
+  grid-area: reps;
 }
 
 .dial {
@@ -72,7 +100,7 @@ h1 {
   --dial-current-color: var(--dial-color);
   --progress: 1;
   position: relative;
-  width: 102px;
+  width: 112px;
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -119,7 +147,7 @@ h1 {
 }
 
 .dial-inner label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -173,16 +201,10 @@ h1 {
 }
 
 .field-unit {
-  font-size: 11px;
+  font-size: 12px;
   margin-top: -3px;
   color: color-mix(in srgb, var(--muted) 88%, var(--text));
   opacity: 0.6;
-}
-
-.buttons {
-  display: grid;
-  grid-template-columns: 1fr;
-  margin-top: 28px;
 }
 
 button {
@@ -212,11 +234,17 @@ button:not(:disabled):active {
 }
 
 .toggle-button.start {
+  grid-area: button;
+  width: calc(100% * 2 / 3);
+  max-width: 280px;
   color: white;
   background: var(--dial-on);
 }
 
 .toggle-button.stop {
+  grid-area: button;
+  width: calc(100% * 2 / 3);
+  max-width: 280px;
   color: #ffe4e6;
   background: var(--dial-off);
 }
@@ -226,20 +254,4 @@ body[data-phase="off"] #dialOff,
 body[data-phase="on"] #dialReps,
 body[data-phase="off"] #dialReps {
   --dial-current-color: var(--dial-color);
-}
-
-@media (max-width: 420px) {
-  .app {
-    padding: 12px 12px 14px;
-  }
-
-  .dial {
-    width: min(29vw, 102px);
-  }
-}
-
-@media (max-width: 360px) {
-  .dial-grid {
-    grid-template-columns: 1fr;
-  }
 }
